@@ -1,4 +1,4 @@
-##Создание SSH ключа
+## Создание SSH ключа
 * Ввести в терминале команду
 ```
 ssh-keygen -t ed25519 -C "example_email@domen.com"
