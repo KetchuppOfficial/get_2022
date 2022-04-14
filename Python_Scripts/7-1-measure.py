@@ -1,5 +1,6 @@
 import RPi.GPIO as RT
 import time
+import matplotlib.pyplot as plt
 
 dac    = [26, 19, 13, 6, 5, 11, 9, 10]
 comp   = 4
@@ -41,18 +42,38 @@ def Let_There_Be_More_Light (number):
 
 try:
     measures = []
-    start = time.time()
+    start_up = time.time()
 
     RT.output(troyka, 1)
 
     voltage = 0
-    while voltage < 0.97 * 3.3:
+    while voltage < 0.8 * V_max:
+        voltage = Get_Voltage()
+        measures.append(voltage)
+        print (voltage)
+
+    start_down = time.time()
+    RT.output(troyka, 0)
+
+    while voltage > 0.02 * V_max:
         voltage = Get_Voltage()
         measures.append(voltage)
         print (voltage)
 
     stop = time.time()
-    RT.output(troyka, 0)
+
+    time_up = start_down - start_up
+    time_down = stop - start_down
+    time_whole = stop - start_up
+
+    plt.plot(measures)
+    plt.savefig('Graph.png')
+
+    measures_str = [str(item) for item in measures]
+    with open('data.txt', 'w') as file:
+        file.write("\n".join(measures_str))
+
+    print ('Время эксперимента: {:.2f}'.format(time_whole))
 
 except KeyboardInterrupt:
     print ("\nProgram stopped by keyboard\n")
