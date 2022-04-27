@@ -2,7 +2,8 @@ import RPi.GPIO as RT
 import time
 import matplotlib.pyplot as plt
 
-dac    = [26, 19, 13, 6, 5, 11, 9, 10]
+dac    = [26, 19, 13,  6, 5, 11,  9, 10]
+leds   = [21, 20, 16, 12, 7,  8, 25, 24]
 comp   = 4
 troyka = 17
 
@@ -12,6 +13,7 @@ V_max  = 3.3
 
 RT.setmode (RT.BCM)
 
+RT.setup (leds, RT.OUT)
 RT.setup (dac, RT.OUT)
 RT.setup (troyka, RT.OUT, initial = 1)
 RT.setup (comp, RT.IN)
@@ -28,6 +30,7 @@ def Get_Voltage ():
 
         signal[i] = 1
         RT.output (dac, signal)
+        Let_There_Be_More_Light (signal)
 
         time.sleep (0.0005)
 
@@ -37,10 +40,11 @@ def Get_Voltage ():
 
     return voltage / levels * V_max
 
-def Let_There_Be_More_Light (number):
-    RT.output (dac, dtob(number))
+def Let_There_Be_More_Light (array):
+    RT.output (leds, array)
 
 try:
+    n_experiments = 0
     measures = []
     start_up = time.time()
 
@@ -74,6 +78,9 @@ try:
         file.write("\n".join(measures_str))
 
     print ('Время эксперимента: {:.2f}'.format(time_whole))
+    print ('Период одного измерения: {:.2f}'.format{time_whole/n_experiments})
+    print ('Средняя частота дискретизации проведённых измерений: {:.f}'.format{n_experiments/time_whole})
+    print ('Шаг квантования АЦП: {:.}2f'.format{V_max/levels})
 
 except KeyboardInterrupt:
     print ("\nProgram stopped by keyboard\n")
