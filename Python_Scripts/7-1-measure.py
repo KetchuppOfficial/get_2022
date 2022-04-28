@@ -83,7 +83,6 @@ try:
 
     with open('data.txt', 'w') as data:
         data.write("\n".join(measures_str))
-        data.write("{:.3f}")
 
     with open('settings.txt', 'w') as settings:
         settings.write('Средняя частота дискретизации проведённых измерений: {:.2f}\n'.format(n_experiments/time_whole))
