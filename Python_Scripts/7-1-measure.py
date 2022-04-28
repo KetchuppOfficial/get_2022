@@ -9,7 +9,7 @@ troyka = 17
 
 bits   = len (dac)
 levels = 2**bits
-V_max  = 3.3
+V_max  = 255
 
 RT.setmode (RT.BCM)
 
@@ -35,17 +35,17 @@ def Get_Voltage ():
 
         comp_val = RT.input (comp)
         signal[i] = comp_val
-        voltage = voltage + 2**(7 - i)*comp_val
-        Let_There_Be_More_Light (voltage)
 
-    return voltage / levels * V_max
+        voltage = voltage + 2**(7 - i)*comp_val
+
+    return voltage
 
 def Let_There_Be_More_Light (voltage):
     RT.output (leds, dtob(voltage))
 
 try:
-    n_experiments = 0
     measures = []
+    n_experiments = 0
     start_up = time.time()
 
     RT.output(troyka, 1)
@@ -53,8 +53,9 @@ try:
     voltage = 0
     while voltage < 0.97 * V_max:
         voltage = Get_Voltage()
+        Let_There_Be_More_Light (voltage)
         measures.append(voltage)
-        print (voltage)
+        print ('voltage = {}'.format(voltage))
         n_experiments += 1
 
     start_down = time.time()
@@ -62,8 +63,9 @@ try:
 
     while voltage > 0.02 * V_max:
         voltage = Get_Voltage()
+        Let_There_Be_More_Light (voltage)
         measures.append(voltage)
-        print (voltage)
+        print ('voltage = {}'.format(voltage))
         n_experiments += 1
 
     stop = time.time()
@@ -76,13 +78,21 @@ try:
     plt.savefig('Graph.png')
 
     measures_str = [str(item) for item in measures]
-    with open('data.txt', 'w') as file:
-        file.write("\n".join(measures_str))
+
+    step = 3.3 / levels
+
+    with open('data.txt', 'w') as data:
+        data.write("\n".join(measures_str))
+        data.write("{:.3f}")
+
+    with open('settings.txt', 'w') as settings:
+        settings.write('Средняя частота дискретизации проведённых измерений: {:.2f}\n'.format(n_experiments/time_whole))
+        settings.write('Шаг квантования АЦП: {:.2}'.format(step))
 
     print ('Время эксперимента: {:.2f}'.format(time_whole))
     print ('Период одного измерения: {:.3f}'.format(time_whole/n_experiments))
     print ('Средняя частота дискретизации проведённых измерений: {:.2f}'.format(n_experiments/time_whole))
-    print ('Шаг квантования АЦП: {:.2}'.format(V_max/levels))
+    print ('Шаг квантования АЦП: {:.2}'.format(step))
 except KeyboardInterrupt:
     print ("\nProgram stopped by keyboard\n")
 
