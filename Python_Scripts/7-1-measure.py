@@ -30,18 +30,18 @@ def Get_Voltage ():
 
         signal[i] = 1
         RT.output (dac, signal)
-        Let_There_Be_More_Light (signal)
 
         time.sleep (0.0005)
 
         comp_val = RT.input (comp)
         signal[i] = comp_val
         voltage = voltage + 2**(7 - i)*comp_val
+        Let_There_Be_More_Light (voltage)
 
     return voltage / levels * V_max
 
-def Let_There_Be_More_Light (array):
-    RT.output (leds, array)
+def Let_There_Be_More_Light (voltage):
+    RT.output (leds, dtob(voltage))
 
 try:
     n_experiments = 0
@@ -51,10 +51,11 @@ try:
     RT.output(troyka, 1)
 
     voltage = 0
-    while voltage < 0.8 * V_max:
+    while voltage < 0.97 * V_max:
         voltage = Get_Voltage()
         measures.append(voltage)
         print (voltage)
+        n_experiments += 1
 
     start_down = time.time()
     RT.output(troyka, 0)
@@ -63,6 +64,7 @@ try:
         voltage = Get_Voltage()
         measures.append(voltage)
         print (voltage)
+        n_experiments += 1
 
     stop = time.time()
 
@@ -78,10 +80,9 @@ try:
         file.write("\n".join(measures_str))
 
     print ('Время эксперимента: {:.2f}'.format(time_whole))
-    print ('Период одного измерения: {:.2f}'.format{time_whole/n_experiments})
-    print ('Средняя частота дискретизации проведённых измерений: {:.f}'.format{n_experiments/time_whole})
-    print ('Шаг квантования АЦП: {:.}2f'.format{V_max/levels})
-
+    print ('Период одного измерения: {:.3f}'.format(time_whole/n_experiments))
+    print ('Средняя частота дискретизации проведённых измерений: {:.2f}'.format(n_experiments/time_whole))
+    print ('Шаг квантования АЦП: {:.2}'.format(V_max/levels))
 except KeyboardInterrupt:
     print ("\nProgram stopped by keyboard\n")
 
