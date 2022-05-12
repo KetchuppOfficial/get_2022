@@ -27,12 +27,12 @@ plt.figure(figsize = (16, 10), dpi = 80)
 plt.title ('Исследование зарядки и  разрядки конденсатора в RC-цепи', loc = 'center', fontsize = 24)
 
 plt.xlabel('t, c', fontsize = 14)
-plt.xlim(0, time_arr.max() + 1)
-plt.xticks(ticks = np.arange(0, time_arr.max(), time_step * 1000), fontsize = 12, rotation = 30, ha = 'center', va = 'top') 
+plt.xlim(0, int(time_arr.max()) + 1)
+plt.xticks(fontsize = 12, rotation = 30, ha = 'center', va = 'top') 
 
 plt.ylabel('U, В', fontsize = 14)
-plt.ylim(0, V_max)
-plt.yticks(ticks = np.arange(0, V_max, V_max / 15), fontsize = 12, rotation = 30, ha = 'right', va = 'top') 
+plt.ylim(0, int(volt_arr.max()) + 0.5)
+plt.yticks(fontsize = 12, rotation = 30, ha = 'right', va = 'top') 
 
 plt.grid(color = 'black',                                      
         linewidth = 0.45,    
@@ -61,4 +61,4 @@ plt.scatter(time_arr, volt_arr, s = 0.01, color = 'red')
 plt.plot(time_arr, volt_arr, 'r', linewidth = 1, marker = "o", markevery = 200, label = 'Аппроксимирующая кривая', linestyle = '-')
 plt.legend (loc = 'best', fontsize = 14)
 
-plt.savefig ('Try.png')
+plt.savefig ('Graph.png')
