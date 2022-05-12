@@ -1,9 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-V_max = 3.3
-levels = 2**8
-
 def ADC_To_Voltage (volt_step):
     data_arr = np.loadtxt ('data.txt', dtype = int)
     volt_arr = data_arr * volt_step
